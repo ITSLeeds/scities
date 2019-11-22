@@ -22,3 +22,13 @@ summary(m)
 plot(d$x, d$pop)
 d$fitted = m$fitted.values
 lines(d$x, d$fitted)
+
+library(pct)
+od_wy = pct::get_od(region = "west-yorkshire")
+od_leeds = od_wy %>% 
+  filter(la_1 == "Leeds") %>% 
+  filter(la_2 == "Leeds") %>% 
+  filter(all > 100) %>% 
+  filter(geo_code1 != geo_code2) 
+readr::write_csv(od_leeds, "od_leeds_50plus.csv")
+piggyback::pb_upload("od_leeds_50plus.csv")

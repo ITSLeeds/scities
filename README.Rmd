@@ -317,8 +317,12 @@ After downloading the data tables need to be linked to the zones and this is don
 An example of this is official zoning systems, such as the 'LSOA' zones loaded and plotted below:
 
 ```{r}
-zones_leeds = ukboundaries::lsoa2011_lds
+zones_leeds = read_sf("zones_leeds.geojson")
 plot(zones_leeds)
+```
+
+```{r, eval=FALSE, echo=FALSE}
+sf::write_sf(zones_leeds, "zones_leeds.geojson")
 ```
 
 ## 2.2 Getting data into R
@@ -333,21 +337,30 @@ There are a number of ways of loading data into you R session:
 Unofficial datasets, such as those provided by the OpenStreetMap project are messier but in some cases richer.
 An exmaple is provided below, which downloads and plots parks in Leeds (you can also download the data from `parks.Rds`):
 
-```{r osm}
+```{r}
+u = "https://github.com/ITSLeeds/scities/releases/download/0.1/parks.geojson"
+parks = read_sf(u)
+```
+
+```{r osm, eval=FALSE, echo=FALSE}
+# do not run because osmdata is sketchy
 library(osmdata)
 q = opq(bbox = 'leeds, uk') %>% 
   add_osm_feature(key = "leisure", value = "park")
 ```
 
-```{r, eval=FALSE}
+```{r, eval=FALSE, echo=FALSE}
 res_parks = osmdata_sf(q = q)
 parks = res_parks$osm_polygons
 plot(parks$geometry)
 ```
 
-```{r, echo=FALSE}
+```{r, eval=FALSE, echo=FALSE}
 # saveRDS(parks, "parks.Rds")
+# write_sf(parks, "parks.geojson")
 piggyback::pb_upload("parks.Rds")
+piggyback::pb_upload("parks.geojson")
+piggyback::pb_download_url("parks.geojson")
 parks = readRDS("parks.Rds")
 plot(parks$geometry)
 ```
@@ -363,10 +376,17 @@ You can do this in 2 ways:
 To download **data** used in this session go to [github.com/ITSLeeds/scities](https://github.com/ITSLeeds/scities), click on '[Releases](https://github.com/ITSLeeds/scities/releases)' and and click on [**data_sci.zip**](https://github.com/ITSLeeds/scities/releases/download/0.1/data_sci.zip).
 
 Unzip the contents of the folder into the same working directory where you created a project.
-You should see the data, including `.z_attributes.csv` in the Files panel of RStudio as shown below.
+You should see the data, including `z_attributes.csv` in the Files panel of RStudio as shown below.
 You should now be in an R session with access to all the data needed for this tutorial.
 
 **Note: RStudio projects are important because they set the working directory.**
+
+For advanced users: you can download, zip and move the files needed for the project with the following commands from a Unix shell:
+
+```{r, engine='bash', eval=FALSE}
+wget https://github.com/ITSLeeds/scities/releases/download/0.1/data_sci.zip
+unzip data_sci.zip
+```
 
 ## 2.4 Loading `.csv` format data 
 
@@ -417,7 +437,7 @@ The code below loads an ESRI format spatial data shapefile using the `st_read` f
 
 ```{r}
 # load Spatial data  
-zones_sf = read_sf("zones_sf.geojson")  
+zones_sf = read_sf("zones_leeds.geojson")  
 ```
 
 This data was obtained from the UK Census Data service. It simply contains outlines of the MSOA areas. The data attributes can be examined using the `as_tibble` function from the `tidyverse`:
@@ -454,6 +474,7 @@ The `foreign` package can be used to load many file types (e.g. EXCEL and SPSS) 
 ## 3.1 CSV Files
 
 Data can be written into a Comma Separated Variable file using the command `write.csv` and then read back into a different variable, as follows: 
+
 ```{r eval=F}
 write_csv(zones, file = "zones.csv")
 ```
@@ -469,8 +490,15 @@ This writes a `.csv` file into the current working directory.
 
 Read spatial data with `read_sf()` (make sure you have downloaded the data from [github.com/ITSLeeds/scities/releases](https://github.com/ITSLeeds/scities/releases)):
 
+```{r, eval=FALSE, echo=FALSE}
+zones_west_yorkshire = pct::get_pct_zones("west-yorkshire")
+zones_leeds = zones_west_yorkshire[zones_west_yorkshire$lad_name == "Leeds", ]
+plot(zones_leeds)
+write_sf(zones_leeds, "zones_leeds.geojson", delete_dsn = TRUE)
+```
+
 ```{r}
-zones_sf = read_sf("z.geojson")
+zones_sf = read_sf("zones_leeds.geojson")
 ```
 
 
@@ -734,7 +762,7 @@ In the second part of the practical we will look at commuting flows between MSOA
 We will load the origin-destination data from `od_attributes.csv`:
 
 ```{r}
-od_attributes = read_csv("od_attributes.csv")
+od_attributes = read_csv("od_leeds_50plus.csv")
 ```
 
 
@@ -807,26 +835,24 @@ In terms of mapping flows, an origin-destination matrix can be converted into 'l
 
 In this case we will use the pre-existing origin-destination datset `od_attributes`.
 
-The origin-destination data in `input` can be converted into a spatial (`sf`) object with the function `stplanr::od2line(flow = od_attributes, zones_sf)`.
-
-Instead, we'll use a pre-saved object called `desire_lines`, loaded and plotted as follows:
+The origin-destination data in `input` can be converted into a spatial (`sf`) object with the function `stplanr::od2line(flow = od_attributes, zones_sf)`:
 
 ```{r}
-desire_lines = readRDS("l.Rds")
+desire_lines = stplanr::od2line(flow = od_attributes, zones_sf)
 plot(desire_lines[1:2])
 ```
 
 This may look like a [Jackson Pollok](https://en.wikipedia.org/wiki/Jackson_Pollock) piece of art but actually the result is useful:
 `desire_lines` is a fully fledged spatial object so we can do geographic operations on it, such as finding a 500 m buffer around each one.
-Instead of putting a buffer around *every* flow we will pick the top 100 lines (that have a distance) for clarity:
+Instead of putting a buffer around *every* flow we will pick the top 50 lines (that have a distance) for clarity:
 
 ```{r}
 desire_lines$length = st_length(desire_lines) %>% 
   as.numeric()
 desire_lines_lines = desire_lines[desire_lines$length > 0, ]
-desire_lines100 = top_n(desire_lines_lines, n = 100, wt = all)
-desire_lines100_buffer = st_buffer(desire_lines100, dist = 0.01)
-plot(desire_lines100_buffer["all"])
+desire_lines50 = top_n(desire_lines_lines, n = 50, wt = all)
+desire_lines50_buffer = stplanr::geo_projected(desire_lines50, st_buffer, dist = 500)
+plot(desire_lines50_buffer["all"])
 ```
 
 ## 6.3 Routing to represent cycling behaviour
@@ -840,13 +866,13 @@ If you get a cyclestreets API key, and save it as `CYCLESTREETS=your-code-goes-h
 
 ```{r, eval=FALSE}
 # note: this code chunk does not run - requires API key
-desire_lines100_wgs = st_transform(desire_lines100, 4326)
-odf = stplanr::line2df(desire_lines100_wgs)
+desire_lines50_wgs = st_transform(desire_lines50, 4326)
+odf = stplanr::line2df(desire_lines50_wgs)
 origins = odf[c("fx", "fy")]
 destinations = odf[c("tx", "ty")]
 route1 = cyclestreets::journey(origins[1, ], destinations[1, ])
 plot(route1)
-routes = lapply(1:100, FUN = function(i) {
+routes = lapply(1:50, FUN = function(i) {
   r = cyclestreets::journey(origins[i, ], destinations[i, ])
   r$route_number = i
   r
@@ -872,6 +898,7 @@ We need to find out what the `key` is first.
 Searching for "cycleway osm" pretty quickly leeds to the site [wiki.openstreetmap.org](https://wiki.openstreetmap.org/wiki/Key:cycleway), which explains how cycleways are tagged in OSM.
 
 ```{r eval=FALSE}
+library(osmdata)
 osm_sf = opq("Leeds, UK") %>%
             add_osm_feature(key = "cycleway") %>%
             osmdata_sf()
