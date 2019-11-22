@@ -384,8 +384,8 @@ You should now be in an R session with access to all the data needed for this tu
 For advanced users: you can download, zip and move the files needed for the project with the following commands from a Unix shell:
 
 ```{r, engine='bash', eval=FALSE}
-wget https://github.com/ITSLeeds/scities/releases/download/0.1/data_sci.zip
-unzip data_sci.zip
+wget https://github.com/ITSLeeds/scities/releases/download/0.2/data.zip
+unzip data.zip
 ```
 
 ## 2.4 Loading `.csv` format data 

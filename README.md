@@ -440,12 +440,11 @@ this tutorial.
 directory.**
 
 For advanced users: you can download, zip and move the files needed for
-the project with the following commands from a Unix
-shell:
+the project with the following commands from a Unix shell:
 
 ``` bash
-wget https://github.com/ITSLeeds/scities/releases/download/0.1/data_sci.zip
-unzip data_sci.zip
+wget https://github.com/ITSLeeds/scities/releases/download/0.2/data.zip
+unzip data.zip
 ```
 
 ## 2.4 Loading `.csv` format data
