@@ -1,6 +1,6 @@
 ---
 title: "An Introduction Digital (spatial data) Methods"
-author: "Lex Comber and Robin Lovelace"
+author: "Robin Lovelace and Lex Comber"
 output:
   github_document:
     toc: true
@@ -437,7 +437,7 @@ The code below loads an ESRI format spatial data shapefile using the `st_read` f
 
 ```{r}
 # load Spatial data  
-zones_sf = read_sf("zones_leeds.geojson")  
+zones_sf = read_sf("zones_sf.geojson")  
 ```
 
 This data was obtained from the UK Census Data service. It simply contains outlines of the MSOA areas. The data attributes can be examined using the `as_tibble` function from the `tidyverse`:
@@ -533,7 +533,7 @@ save(list = "zones", file = "MyData.RData")
 save(list = c("zones", "zones_sf"), file = "AllData.rda")
 ```
 
-```{r echo = F}
+```{r echo = F, eval=FALSE}
 
 save(list = c("zones", "zones_sf"), file = "AllData.rda")
 ```
@@ -552,14 +552,10 @@ In the below these considerations are evaluated in the following sequence:
 In the previous sections you loaded and saved a number of R objects. To make sure you have the right data you should clear your workspace and re-load the `AllData.rda` file. To clear our workspace either go to
 **Session > Clear Workspace...***
 or enter
-```{r eval = T}
+```{r eval = FALSE}
 rm(list = ls())
 ```
 Load the travel to work data by cycling again for the MSOAs in Leeds and check what is loaded us `ls()`:
-```{r}
-load("AllData.rda")
-ls()
-```
 
 ## 4.1 Simple data explorations
 You have two R objects in your workspace: `zones` and `zones_sf`. The first thing is establish what types or classes they are:

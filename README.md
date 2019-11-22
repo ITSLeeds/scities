@@ -1,6 +1,6 @@
 An Introduction Digital (spatial data) Methods
 ================
-Lex Comber and Robin Lovelace
+Robin Lovelace and Lex Comber
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
@@ -496,22 +496,22 @@ each MSOA ***to*** each MSOA. Data with from-to information are known as
 ``` r
 ## dimensions - rows and columns
 dim(zones)
-#> [1] 299  65
+#> [1] 107 129
 ## column / variable names
 head(names(zones))
 #> [1] "geo_code" "geo_name" "lad11cd"  "lad_name" "all"      "bicycle"
 ## look at the first 2 rows and 3 columns
 zones[1:3, 1:2]
 #> # A tibble: 3 x 2
-#>   geo_code  geo_name    
-#>   <chr>     <chr>       
-#> 1 E02002183 Bradford 001
-#> 2 E02002184 Bradford 002
-#> 3 E02002185 Bradford 003
+#>   geo_code  geo_name 
+#>   <chr>     <chr>    
+#> 1 E02002330 Leeds 001
+#> 2 E02002331 Leeds 002
+#> 3 E02002332 Leeds 003
 ## use the sumamry function for the second column
 summary(zones[2])
 #>    geo_name        
-#>  Length:299        
+#>  Length:107        
 #>  Class :character  
 #>  Mode  :character
 ```
@@ -534,7 +534,7 @@ spatial data:
 
 ``` r
 # load Spatial data  
-zones_sf = read_sf("zones_leeds.geojson")  
+zones_sf = read_sf("zones_sf.geojson")  
 ```
 
 This data was obtained from the UK Census Data service. It simply
@@ -543,45 +543,11 @@ using the `as_tibble` function from the `tidyverse`:
 
 ``` r
 head(as_tibble(zones_sf), 2)
-#> # A tibble: 2 x 130
-#>   geo_code geo_name lad11cd lad_name   all bicycle  foot car_driver
-#>   <chr>    <chr>    <chr>   <chr>    <dbl>   <dbl> <dbl>      <dbl>
-#> 1 E020023… Leeds 0… E08000… Leeds     2809      52   300       2170
-#> 2 E020023… Leeds 0… E08000… Leeds     2387      53   469       1573
-#> # … with 122 more variables: car_passenger <dbl>, motorbike <dbl>,
-#> #   train_tube <dbl>, bus <dbl>, taxi_other <dbl>, govtarget_slc <dbl>,
-#> #   govtarget_sic <dbl>, govtarget_slw <dbl>, govtarget_siw <dbl>,
-#> #   govtarget_sld <dbl>, govtarget_sid <dbl>, govtarget_slp <dbl>,
-#> #   govtarget_sip <dbl>, govtarget_slm <dbl>, govtarget_sim <dbl>,
-#> #   govtarget_slpt <dbl>, govtarget_sipt <dbl>, govnearmkt_slc <dbl>,
-#> #   govnearmkt_sic <dbl>, govnearmkt_slw <dbl>, govnearmkt_siw <dbl>,
-#> #   govnearmkt_sld <dbl>, govnearmkt_sid <dbl>, govnearmkt_slp <dbl>,
-#> #   govnearmkt_sip <dbl>, govnearmkt_slm <dbl>, govnearmkt_sim <dbl>,
-#> #   govnearmkt_slpt <dbl>, govnearmkt_sipt <dbl>, gendereq_slc <dbl>,
-#> #   gendereq_sic <dbl>, gendereq_slw <dbl>, gendereq_siw <dbl>,
-#> #   gendereq_sld <dbl>, gendereq_sid <dbl>, gendereq_slp <dbl>,
-#> #   gendereq_sip <dbl>, gendereq_slm <dbl>, gendereq_sim <dbl>,
-#> #   gendereq_slpt <dbl>, gendereq_sipt <dbl>, dutch_slc <dbl>, dutch_sic <dbl>,
-#> #   dutch_slw <dbl>, dutch_siw <dbl>, dutch_sld <dbl>, dutch_sid <dbl>,
-#> #   dutch_slp <dbl>, dutch_sip <dbl>, dutch_slm <dbl>, dutch_sim <dbl>,
-#> #   dutch_slpt <dbl>, dutch_sipt <dbl>, ebike_slc <dbl>, ebike_sic <dbl>,
-#> #   ebike_slw <dbl>, ebike_siw <dbl>, ebike_sld <dbl>, ebike_sid <dbl>,
-#> #   ebike_slp <dbl>, ebike_sip <dbl>, ebike_slm <dbl>, ebike_sim <dbl>,
-#> #   ebike_slpt <dbl>, ebike_sipt <dbl>, base_slcyclehours <dbl>,
-#> #   govtarget_sicyclehours <dbl>, govnearmkt_sicyclehours <dbl>,
-#> #   gendereq_sicyclehours <dbl>, dutch_sicyclehours <dbl>,
-#> #   ebike_sicyclehours <dbl>, base_sldeath <dbl>, base_slyll <dbl>,
-#> #   base_slvalueyll <dbl>, base_slsickdays <dbl>, base_slvaluesick <dbl>,
-#> #   base_slvaluecomb <dbl>, govtarget_sideath <dbl>, govtarget_siyll <dbl>,
-#> #   govtarget_sivalueyll <dbl>, govtarget_sisickdays <dbl>,
-#> #   govtarget_sivaluesick <dbl>, govtarget_sivaluecomb <dbl>,
-#> #   govnearmkt_sideath <dbl>, govnearmkt_siyll <dbl>,
-#> #   govnearmkt_sivalueyll <dbl>, govnearmkt_sisickdays <dbl>,
-#> #   govnearmkt_sivaluesick <dbl>, govnearmkt_sivaluecomb <dbl>,
-#> #   gendereq_sideath <dbl>, gendereq_siyll <dbl>, gendereq_sivalueyll <dbl>,
-#> #   gendereq_sisickdays <dbl>, gendereq_sivaluesick <dbl>,
-#> #   gendereq_sivaluecomb <dbl>, dutch_sideath <dbl>, dutch_siyll <dbl>,
-#> #   dutch_sivalueyll <dbl>, dutch_sisickdays <dbl>, dutch_sivaluesick <dbl>, …
+#> # A tibble: 2 x 4
+#>   geo_code  geo_label geo_labelw                                        geometry
+#>   <chr>     <chr>     <chr>                                   <MULTIPOLYGON [°]>
+#> 1 E01011335 Leeds 05… <NA>       (((-1.653518 53.80814, -1.653615 53.8082, -1.6…
+#> 2 E01011313 Leeds 09… <NA>       (((-1.563318 53.7745, -1.56323 53.77456, -1.56…
 ```
 
 You can also examine the spatial properties of the data using the `plot`
@@ -733,12 +699,6 @@ rm(list = ls())
 Load the travel to work data by cycling again for the MSOAs in Leeds and
 check what is loaded us `ls()`:
 
-``` r
-load("AllData.rda")
-ls()
-#> [1] "zones"    "zones_sf"
-```
-
 ## 4.1 Simple data explorations
 
 You have two R objects in your workspace: `zones` and `zones_sf`. The
@@ -763,7 +723,7 @@ MSOAs. The `dim`, `head` and `names` functions show that the data has
 
 ``` r
 dim(zones)
-#> [1] 299  65
+#> [1] 107 129
 ```
 
 There are 107 of these areas in
@@ -788,7 +748,7 @@ cycling to work living in each LSOA using the code below.
 
 ``` r
 head(zones$bicycle / zones$all) 
-#> [1] 0.006839945 0.013434931 0.010146561 0.008761584 0.013043478 0.010162602
+#> [1] 0.01851193 0.02220360 0.01578308 0.02137323 0.01769616 0.01079843
 ```
 
 The numbers are low - typically around 0.02. We could make the numbers a
@@ -844,7 +804,7 @@ hist(zones$all, breaks = 10,
   xlab = "Population", main = "Populations across MSOAs in Leeds", col = "red")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-37-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-36-1.png)<!-- -->
 
 Alternatively`ggplot2` package that is loaded with the `tidyverse` van
 also be used:
@@ -856,7 +816,7 @@ ggplot(zones, aes(x = all)) +
     labs(title="Populations across MSOAs in Leeds")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-38-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-37-1.png)<!-- -->
 
 This is more involved than simple `hist` but the basic idea is that
 `ggplot` is called and then the type of plot is specified. It allows
@@ -873,7 +833,7 @@ ggplot(zones, aes(x= all)) +
     labs(title="Populations across MSOAs in Leeds")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-39-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-38-1.png)<!-- -->
 
 The `boxplot()` function also provides a useful way of summarising data:
 
@@ -881,7 +841,7 @@ The `boxplot()` function also provides a useful way of summarising data:
 boxplot(zones$all, main = "The distribution MSOA populations in Leeds")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-40-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-39-1.png)<!-- -->
 
 And there is `ggplot` version as well but this is not so good for single
 values and better when comparing distributions of some value across
@@ -892,7 +852,7 @@ ggplot(zones, aes(x=1, y = all)) +
     geom_boxplot() 
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-41-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-40-1.png)<!-- -->
 
 We can also examine the `zones_sf` object in the same way. The
 `as_tibble` function converts the `data.frame` of `zones_sf` to a
@@ -919,7 +879,7 @@ MSOA census areas in Leeds:
 plot(zones_sf["foot"])
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-43-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-42-1.png)<!-- -->
 
 The `tmap` package allows more sophisticated maps (as `ggplot2` does for
 other graphics):
@@ -929,7 +889,7 @@ tm_shape(zones_sf) +
   tm_polygons("foot")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-44-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-43-1.png)<!-- -->
 
 However, `tmap` also allows interactive graphics for example with an
 OpenStreetMap backdrop, Notice the use of transparency parameter
@@ -945,7 +905,7 @@ tm_shape(zones_sf) +
   tm_view(basemaps = "OpenStreetMap")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-45-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-44-1.png)<!-- -->
 
 ``` r
 # reset the plot mode
@@ -962,7 +922,7 @@ common:
 
 ``` r
 head(zones$geo_code)
-#> [1] "E02002183" "E02002184" "E02002185" "E02002186" "E02002187" "E02002188"
+#> [1] "E02002330" "E02002331" "E02002332" "E02002333" "E02002334" "E02002335"
 head(zones_sf$geo_code)
 #> [1] "E02002330" "E02002331" "E02002332" "E02002333" "E02002334" "E02002335"
 ```
@@ -1000,7 +960,7 @@ tm_shape(zones_joined) +
   tm_view(basemaps = "OpenStreetMap")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-48-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-47-1.png)<!-- -->
 
 ``` r
 # reset the plot mode
@@ -1019,7 +979,7 @@ ggplot(zones_joined, aes(lad_name, all)) +
   labs(title="Population distributions across different Rural / Urban MSOAs in Leeds")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-49-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-48-1.png)<!-- -->
 
 Further resources on **ggplot2** can be found here:
 
@@ -1075,7 +1035,7 @@ tm_shape(zones_joined) +
   tm_layout(legend.position = c("left","bottom"))
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-51-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-50-1.png)<!-- -->
 
 Here we can see that there are very distinct and perhaps expected
 patterns with flows into the centre of Leeds from the surrounding areas.
@@ -1196,7 +1156,7 @@ desire_lines = stplanr::od2line(flow = od_attributes, zones_sf)
 plot(desire_lines[1:2])
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-52-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-51-1.png)<!-- -->
 
 This may look like a [Jackson
 Pollok](https://en.wikipedia.org/wiki/Jackson_Pollock) piece of art but
@@ -1214,7 +1174,7 @@ desire_lines50_buffer = stplanr::geo_projected(desire_lines50, st_buffer, dist =
 plot(desire_lines50_buffer["all"])
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-53-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-52-1.png)<!-- -->
 
 ## 6.3 Routing to represent cycling behaviour
 
@@ -1254,7 +1214,7 @@ routes_df = readRDS("routes_df.Rds")
 plot(routes_df[routes_df$route_number == 1, ])
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-55-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-54-1.png)<!-- -->
 
 ``` r
 plot(routes_df)
@@ -1262,7 +1222,7 @@ plot(routes_df)
 #> all
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-55-2.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-54-2.png)<!-- -->
 
 ## 6.4 Cycle Routes between flow areas
 
@@ -1302,7 +1262,7 @@ And then plot the spatial object
 plot(st_geometry(osm_sf$osm_lines))
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-59-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-58-1.png)<!-- -->
 
 It would be nice to see this in the context of the MSOAs but the
 `hampi_sf$osm_lines` data will need to be converted to the same spatial
@@ -1317,7 +1277,7 @@ tm_shape(osm_sf$osm_lines)+
   tm_borders(, alpha = 0.5, col = "lightgrey")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-60-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-59-1.png)<!-- -->
 
 This shows the current cycle routes and can be considered against the
 original and destinations mapped
@@ -1511,7 +1471,7 @@ routes_100 = aggregate(routes_df["busynance"],
 plot(routes_100["busynance"])
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-61-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-60-1.png)<!-- -->
 
 Then we can convert this into the same CRS as the zones, and buffer the
 result as before:
@@ -1532,7 +1492,7 @@ cycleways_near = st_intersection(osm_sf$osm_lines, routes_buff)
 plot(cycleways_near$geometry)
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-63-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-62-1.png)<!-- -->
 
 We can total up the distances as follows:
 
@@ -1550,7 +1510,7 @@ plot(routes_length_cycleway, col = sf.colors(5, alpha = 0.3))
 #> color palette
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-65-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-64-1.png)<!-- -->
 
 Or with our new **tmap** skill like this (this is easier to interpret):
 
@@ -1559,7 +1519,7 @@ tm_shape(routes_length_cycleway) +
   tm_fill(col = "length", alpha = 0.2, palette = "inferno")
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-66-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-65-1.png)<!-- -->
 
 How to interpret this? That’s partly up to you. One interpretation is
 that most cycle routes start overlapping (within a 500 m buffer at
